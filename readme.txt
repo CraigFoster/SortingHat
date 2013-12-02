@@ -8,6 +8,8 @@ To Run:
 
 Simply run the file TFIDF.py in a folder that also contains tweetcollector.py and the following text files: draco_lines.txt, dumbledore_lines.txt, hagrid_lines.txt, harry_lines.txt, hermione_lines.txt, ron_lines.txt
 
+you must have the following packages installed on your machine: NLTK, PyYAML
+
 You can change the twitter user by modifying the variable twitter_user on line 35 of TFIDFscore.py
 
 We are still looking into incorporating the natural processing language (npl) extension to our tweet analyzing function. 

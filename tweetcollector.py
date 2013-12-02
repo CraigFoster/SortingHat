@@ -65,4 +65,4 @@ if __name__ =='__main__':
 	print "main"
 	#TweetCollector()
 	collector  = TweetCollector()
-	collector.CollectTweets()
+	collector.CollectTweets('feliciaday')
