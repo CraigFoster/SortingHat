@@ -1,14 +1,15 @@
-
 from __future__ import division
 import re
-from stemming import porter2
+from nltk import PorterStemmer
+import nltk
 import math
 import json
 import os
 from operator import itemgetter
-
+import sys
 import nltk
 import tweetcollector
+
 
 def tokenize(text):
 	"""
@@ -20,11 +21,11 @@ def tokenize(text):
     should return a list of the tokens in the input string.
 	"""
 	tokens = re.findall("[\w']+", text.lower())
-	return [porter2.stem(token) for token in tokens]
+	return [PorterStemmer().stem(token) for token in tokens]
 
 class TFIDF(object):
 	""" A search engine for tweets. """
-	def __init__(self, ranker=None, classifier=None):
+	def __init__(self, twitterName, ranker=None, classifier=None):
 		"""
 		purpose: Create the search engine for tweets
 		parameters:
@@ -34,7 +35,8 @@ class TFIDF(object):
 		self.mytweets = []
 		self.nltk_tweets = []
 		
-		twitter_user = 'badgerslkehoney'
+		#twitter_user = 'badgerslkehoney'
+		twitter_user = twitterName
 		
 		tweet_collect = tweetcollector.TweetCollector()
 		tweets = tweet_collect.CollectTweets(twitter_user)
@@ -51,45 +53,44 @@ class TFIDF(object):
 		f_harry = open('harry_lines.txt', 'r')
 		harry_lines = f_harry.read()
 		self.scripts['harry']= tokenize(harry_lines)
-		#print nltk.pos_tag(nltk.word_tokenize(harry_lines))
-		self.nltk_scripts['harry'] = []
-		for word, tag in nltk.pos_tag(nltk.word_tokenize(harry_lines)):
-			self.nltk_scripts['harry'].append(tag)
+		f_harry_nltk = open('harry_nltk.txt', 'r')
+		harry_nltk = f_harry_nltk.read()
+		self.nltk_scripts['harry']= tokenize(harry_nltk)
 		
 		f_hermione = open('hermione_lines.txt', 'r')
 		hermione_lines = f_hermione.read()
 		self.scripts['hermione']= tokenize(hermione_lines)
-		self.nltk_scripts['hermione'] = []
-		for word, tag in nltk.pos_tag(nltk.word_tokenize(hermione_lines)):
-			self.nltk_scripts['hermione'].append(tag)
+		f_hermione_nltk = open('hermione_nltk.txt', 'r')
+		hermione_nltk = f_hermione_nltk.read()
+		self.nltk_scripts['hermione']= tokenize(hermione_nltk)
 		
 		f_ron = open('ron_lines.txt', 'r')
 		ron_lines = f_ron.read()
 		self.scripts['ron']= tokenize(ron_lines)
-		self.nltk_scripts['ron'] = []
-		for word, tag in nltk.pos_tag(nltk.word_tokenize(ron_lines)):
-			self.nltk_scripts['ron'].append(tag)
+		f_ron_nltk = open('ron_nltk.txt', 'r')
+		ron_nltk = f_ron_nltk.read()
+		self.nltk_scripts['ron']= tokenize(ron_nltk)
 		
 		f_dumbledore = open('dumbledore_lines.txt', 'r')
 		dumbledore_lines = f_dumbledore.read()
 		self.scripts['dumbledore']= tokenize(dumbledore_lines)
-		self.nltk_scripts['dumbledore'] = []
-		for word, tag in nltk.pos_tag(nltk.word_tokenize(dumbledore_lines)):
-			self.nltk_scripts['dumbledore'].append(tag)
+		f_dumbledore_nltk = open('dumbledore_nltk.txt', 'r')
+		dumbledore_nltk = f_dumbledore_nltk.read()
+		self.nltk_scripts['dumbledore']= tokenize(dumbledore_nltk)
 		
 		f_hagrid = open('hagrid_lines.txt', 'r')
 		hagrid_lines = f_hagrid.read()
 		self.scripts['hagrid']= tokenize(hagrid_lines)
-		self.nltk_scripts['hagrid'] = []
-		for word, tag in nltk.pos_tag(nltk.word_tokenize(hagrid_lines)):
-			self.nltk_scripts['hagrid'].append(tag)
+		f_hagrid_nltk = open('hagrid_nltk.txt', 'r')
+		hagrid_nltk = f_hagrid_nltk.read()
+		self.nltk_scripts['hagrid']= tokenize(hagrid_nltk)
 		
 		f_draco = open('draco_lines.txt', 'r')
 		draco_lines = f_draco.read()
 		self.scripts['draco']= tokenize(draco_lines)
-		self.nltk_scripts['draco'] = []
-		for word, tag in nltk.pos_tag(nltk.word_tokenize(draco_lines)):
-			self.nltk_scripts['draco'].append(tag)
+		f_draco_nltk = open('draco_nltk.txt', 'r')
+		draco_nltk = f_draco_nltk.read()
+		self.nltk_scripts['draco']= tokenize(draco_nltk)
 		
 		f_harry.close()
 		f_hermione.close()
@@ -97,6 +98,13 @@ class TFIDF(object):
 		f_dumbledore.close()
 		f_hagrid.close()
 		f_draco.close()
+		
+		f_harry_nltk.close()
+		f_hermione_nltk.close()
+		f_ron_nltk.close()
+		f_dumbledore_nltk.close()
+		f_hagrid_nltk.close()
+		f_draco_nltk.close()
 		
 		#print self.scripts['harry']
 		
@@ -208,7 +216,7 @@ class TFIDF(object):
 			for word in word_counter.keys():
 				self.inverted_index[word].append([char_id, word_counter[word]])
             
-		print "lines indexed"
+		#print "lines indexed"
         #print self.word_list
 		
 		#print self.inverted_index
@@ -255,7 +263,7 @@ class TFIDF(object):
 			for word in word_counter.keys():
 				self.nltk_inverted_index[word].append([char_id, word_counter[word]])
             
-		print "nltk lines indexed"
+		#print "nltk lines indexed"
         #print self.word_list
 		
 		#print self.inverted_index
@@ -281,6 +289,13 @@ class TFIDF(object):
         returns: list of dictionaries containing the tweets which must have 
                 the field "sim" in the data structure. 
 		"""
+		#print self.mytweets
+		if self.mytweets==['no', 'user']:
+			return 7
+		elif len(self.mytweets) < 200:
+			return 8
+		
+		
 		import operator
 		docs = []
 		#tokens = tokenize(query)
@@ -353,31 +368,47 @@ class TFIDF(object):
 					character_sim[char1] = val
 					
 		
+		#Adjust values for a better distribution
+		character_sim['harry'] = character_sim['harry']*0.99
+		character_sim['ron'] = character_sim['ron']*1.01
+		character_sim['hermione'] = character_sim['hermione']*1
+		character_sim['hagrid'] = character_sim['hagrid']*1.02 + 0.03
+		character_sim['dumbledore'] = character_sim['dumbledore']*1
+		character_sim['draco'] = character_sim['draco']*1.06 +0.04
+		
 		
 		cosine_chars = sorted(character_sim.iteritems(), key=itemgetter(1), reverse = True)
+		hpNAME = cosine_chars[:1][0][0]
 		
-		#cosine_chars = sorted(self.char_sim.iteritems(), key=itemgetter(1), reverse = True)
-		#cosine_nltk_vals = sorted(self.nltk_sim.iteritems(), key=itemgetter(1), reverse = True)
-		
-		#print cosine_nltk_vals
 		#print cosine_chars
-        #print cosine_tweets[:5]		
-		return cosine_chars[:6]
-		
+
+		if(hpNAME == "harry"):
+			name = 1	
+		elif(hpNAME == "ron"):
+			name = 2
+		elif(hpNAME == "hermione"):
+			name = 3
+		elif(hpNAME == "hagrid"):
+			name = 4
+		elif(hpNAME == "dumbledore"):
+			name = 5
+		elif(hpNAME == "draco"):
+			name = 6
+		#Pass whatever text you want to note that it's a wrong twitter handle
+		#elif(hpNAME == "wrong"):
+		#	name = 7
+		#Pass whatever text you want to note that user doesn't have enough tweets.
+		#elif(hpNAME == "less"):
+		#	name = 8
+		else:
+			print "error"
+   
+		return name
+	
 if __name__=="__main__":
-	'''
-    print "Test is starting..."
-    _searcher = TweetSearch()                                                   # create our searcher
-    tweets = read_data(os.path.join(os.getcwd(),'tamu_athletics_small.json'))   # read all tweets from json file
-    _searcher.index_tweets(tweets)                                              # index tweets and calculate tf-idf
-    #query = "johnny manziel"                                                    # example query
-    query = "aggie football"
-    output = _searcher.search_results(query)                                    # search query and get ranked tweets
-    print "Starting to output ranked tweets-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    for tweet in output:
-        print str(tweet['sim']) + '\t' + tweet['text'].encode('utf-8')
-	'''
-	ranker = TFIDF()
-	ranker.index_lines()
-	ranker.index_nltk()
-	print ranker.search_results()
+    #When you run the program, do "python TFIDFscore.py twitterHandle"	ex. python TFIDFscore.py anakp525
+    
+    ranker = TFIDF(sys.argv[1])
+    ranker.index_lines()
+    ranker.index_nltk()
+    print ranker.search_results()

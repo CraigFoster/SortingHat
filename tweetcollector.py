@@ -41,25 +41,22 @@ class TweetCollector():
 		
 	def CollectTweets(self, username):
 		#self.check_api_rate_limit(900)
-		print "Collecting"
-		
-		#username = 'feliciaday'
-		
-		user = self.api.get_user(username)
-		
-		#timeline = self.api.user_timeline(screen_name=user, include_rts=True, count=100)
-		#for tweet in timeline:
-		#	print tweet.text
-		
-		screen_name = "BBCNews"
+		#print "Collecting"
+		try:
+			user = self.api.get_user(username)
+			tweets = ""	
 			
-		tweets = ""	
+			for status in tweepy.Cursor(self.api.user_timeline,id=username).items(100): 
+				tweets += status.__getstate__()['text'].encode("utf-8")
+				#print status.__getstate__()['text'].encode("utf-8")+'\n'		
+				
+			return tweets
 			
-		for status in tweepy.Cursor(self.api.user_timeline,id=username).items(100): 
-			tweets += status.__getstate__()['text'].encode("utf-8")
-			#print status.__getstate__()['text'].encode("utf-8")+'\n'		
+		except:
+			#print 'error'
+			return 'no user'		
 			
-		return tweets
+		
 
 if __name__ =='__main__':
 	print "main"
