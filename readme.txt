@@ -13,3 +13,7 @@ you must have the following packages installed on your machine: NLTK, PyYAML
 You can change the twitter user by modifying the variable twitter_user on line 35 of TFIDFscore.py
 
 We are still looking into incorporating the natural processing language (npl) extension to our tweet analyzing function. 
+
+Website is hosted on the following link. 
+http://ec2-54-200-213-8.us-west-2.compute.amazonaws.com/hogwarts.html
+Note: It's running off my personal EC2 account and will be shutting it down by 12/11/2013

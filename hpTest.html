@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8" />
+<title>Read File (via AJAX)</title>
+
+
+<script type="text/javascript">
+var reader = new XMLHttpRequest() || new ActiveXObject('MSXML2.XMLHTTP');
+
+function loadFile() {
+    reader.open('get', 'results.txt', true); 
+    reader.onreadystatechange = displayContents;
+    reader.send(null);
+}
+
+function displayContents() {
+    if(reader.readyState==4) {
+        var el = document.getElementById('main');
+        //el.innerHTML = reader.responseText;
+		//document.write(reader.responseText);
+		if(reader.responseText == '1'){
+			harry();
+		}
+		else if(reader.responseText == '2'){
+			hermione();
+		}
+		else if(reader.responseText == '3'){
+			ron();
+		}
+		else if(reader.responseText == '4'){
+			hagrid();
+		}
+		else if(reader.responseText == '5'){
+			dumbledore();
+		}		
+		else if(reader.responseText == '6'){
+			draco();
+		}		
+		<!-- Twitter handle does not exisit -->
+		else if(reader.responseText == '7'){
+			noTwitterHandle();
+		}
+		<!-- Not enough tweets -->
+		else if(reader.responseText == '8'){
+			document.getElementById('results').style.display = block;
+		}
+		else{
+			document.getElementById('resultsText').innerHTML = "We are sending a value != 1-8";
+		}		
+    }	
+}
+
+function harry(){
+	document.getElementById('resultsImage').src= "hp1.png";
+	document.getElementById('resultsText').innerHTML = "Harry text";
+}
+
+function hermione(){
+	document.getElementById('resultsImage').src= "hp3.png";
+	document.getElementById('resultsText').innerHTML = 
+	"<b><center>Hermione text</center></b> <p> You tweet just like hermione.";	
+}
+
+function ron(){
+	document.getElementById('resultsImage').src= "hp2.png";
+	document.getElementById('resultsText').innerHTML = "Ron text";	
+}
+
+function hagrid(){
+	document.getElementById('resultsImage').src= "hp4.png";
+	document.getElementById('resultsText').innerHTML = "Hagrid text";	
+}
+
+function dumbledore(){
+	document.getElementById('resultsImage').src= "hp5.png";
+	document.getElementById('resultsText').innerHTML = "Dumbledore text";
+}
+
+function draco(){
+	document.getElementById('resultsImage').src= "hp6.png";
+	document.getElementById('resultsText').innerHTML = "Draco text";
+}
+
+function noTwitterHandle(){
+	document.getElementById('resultsImage').src= "hp7.png";
+	document.getElementById('resultsText').innerHTML = "Not a correct twitter Handle";
+}
+
+</script>
+</head>
+	<body>
+	<div id="container">
+		<input type="button" value="test.txt"  onclick="loadFile()" />
+		<div id="main">
+		</div>
+	</div>
+
+	<div id="results">
+	<table border="1">
+		<tr>
+			<td> <img id="resultsImage" src="hp7.png" /> </td>
+			<td id="resultsText"> 
+			<center><b> Sorry </b></center>
+			<p>
+			You don't have enough tweets for us to determine which character you tweet like. 
+			</td>
+		</tr>
+	</table>			
+	</div>
+	
+	</body>
+
+
+</html>
